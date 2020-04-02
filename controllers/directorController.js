@@ -16,7 +16,9 @@ exports.director_create_get = (req, res) => {
 };
 
 // Handle director create on POST
-res.send('NOT IMPL: director create POST');
+exports.director_create_post = (req, res) => {
+  res.send('NOT IMPL: director create POST');
+};
 
 // Display director delete form on GET
 exports.director_delete_get = (req, res) => {
@@ -34,6 +36,6 @@ exports.director_update_get = (req, res) => {
 };
 
 // Handle director update on POST
-exports.durector_update_post = (req, res) => {
+exports.director_update_post = (req, res) => {
   res.send('NOT IMP: director update on POST');
 };
