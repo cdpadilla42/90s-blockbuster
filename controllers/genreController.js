@@ -76,7 +76,7 @@ exports.genre_create_post = [
     } else {
       // Data is valid
       // Check if Genre with same name already exists
-      Genre.findONe({ name: req.body.name }).exec(function (err, found_genre) {
+      Genre.findOne({ name: req.body.name }).exec(function (err, found_genre) {
         if (err) return next(err);
 
         if (found_genre) {

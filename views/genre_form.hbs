@@ -5,7 +5,7 @@
   <div class="form-group">
     <label for="name">
       Genre:
-      <input type="text" name="name" placeholder="Fantasy, Poetry, etc." value="genre.name">
+      <input type="text" name="name" placeholder="Fantasy, Poetry, etc." value="{{#if genre.name}}genre.name{{else}}{{/if}}">
       <input type="submit" value="Submit">
     </label>
   </div>

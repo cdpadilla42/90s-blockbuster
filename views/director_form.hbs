@@ -1,0 +1,27 @@
+<h1>{{title}}</h1>
+
+<form action="" method="post">
+  <div class="form-group">
+    <label for="first_name">
+      First Name:
+      <input type="text" name="first_name" required value="{{#if director.first_name}}{{director.first_name}}{{else}}{{/if}}">
+    </label>
+    <label for="family_name">
+      Family Name:
+      <input type="text" name="family_name" required value="{{#if director.family_name}}{{director.family_name}}{{else}}{{/if}}">
+    </label>
+  </div>
+  <div class="form-group">
+    <label for="date_of_birth">
+      Date of Birth:
+      <input type="date" name="date_of_birth" value="{{#if director.date_of_birth}}{{director.date_of_birth}}{{else}}{{/if}}" placeholder="dd/mm/yyyy">
+    </label>
+    <label for="date_of_death">
+      Date of Death:
+      <input type="date" name="date_of_death" value="{{#if director.date_of_death}}{{director.date_of_death}}{{else}}{{/if}}" placeholder="dd/mm/yyyy">
+    </label>
+  </div>
+  <div class="form-group">
+    <input type="submit" value="Submit">
+  </div>
+</form>
