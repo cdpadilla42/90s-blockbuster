@@ -11,12 +11,12 @@ const DirectorSchema = new Schema({
 
 // Virtual for director's full name
 
-DirectorSchema.virtual('name').get(() => {
+DirectorSchema.virtual('name').get(function() {
   var fullname = '';
   if (this.first_name && this.family_name) {
     fullname = this.family_name + ', ' + this.first_name;
   }
-  if (!this.first_name || this.family_name) {
+  if (!this.first_name || !this.family_name) {
     fullname = '';
   }
 
@@ -24,14 +24,14 @@ DirectorSchema.virtual('name').get(() => {
 });
 
 // Virtual for director's Lifespan
-DirectorSchema.virtual('lifespan').get(() => {
+DirectorSchema.virtual('lifespan').get(function() {
   return (
     this.date_of_death.getYear() - this.date_of_birth.getYear()
   ).toString();
 });
 
 // Virtual for Director's URL
-DirectorSchema.virtual('URL').get(() => {
+DirectorSchema.virtual('url').get(function() {
   return '/catalog/director/' + this._id;
 });
 

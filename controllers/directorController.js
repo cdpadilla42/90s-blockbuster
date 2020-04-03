@@ -1,8 +1,17 @@
-var director = require('../models/director');
+var Director = require('../models/director');
 
 // Display List of all Directors
-exports.director_list = (req, res) => {
-  res.send('NOT IMPLEMENTED: director list');
+exports.director_list = (req, res, err) => {
+  Director.find()
+    .populate('director')
+    .sort([['family_name', 'ascending']])
+    .exec((err, list_directors) => {
+      if (err) return next(err);
+      res.render('director_list', {
+        title: 'Director List',
+        director_list: list_directors
+      });
+    });
 };
 
 // Display detail page for a specific director

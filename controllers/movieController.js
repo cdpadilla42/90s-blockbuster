@@ -8,15 +8,6 @@ const async = require('async');
 exports.index = (req, res) => {
   async.parallel(
     {
-      movie_count: callback => {
-        Movie.countDocuments({}, callback);
-      },
-      movie_instance_count: callback => {
-        MovieInstance.countDocuments({}, callback);
-      },
-      movie_instance_available_count: callback => {
-        MovieInstance.countDocuments({ status: 'Available' }, callback);
-      },
       director_count: callback => {
         Director.countDocuments({}, callback);
       },
@@ -35,8 +26,16 @@ exports.index = (req, res) => {
 };
 
 // Display List of movies
-exports.movie_list = (req, res) => {
-  res.send('NOT IMPLEMENTED: movies list');
+exports.movie_list = (req, res, next) => {
+  Movie.find({}, 'title director')
+    .populate('director')
+    .exec((err, list_movies) => {
+      if (err) return next(err);
+      res.render('movie_list', {
+        title: 'Movie List',
+        movie_list: list_movies
+      });
+    });
 };
 
 // Display detail of movie

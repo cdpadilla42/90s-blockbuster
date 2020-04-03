@@ -1,8 +1,17 @@
 var movieInstance = require('../models/movie');
 
 // Display list of all MovieInstrances
-exports.movieInstance_list = (req, res) => {
-  res.send('NOT IMPLEMENTED: Movie Instance List');
+exports.movieInstance_list = (req, res, next) => {
+  movieInstance
+    .find()
+    .populate('movie')
+    .exec((err, list_movieinstances) => {
+      if (err) return next(err);
+      res.render('movieinstance_list', {
+        title: 'Movie Instance List',
+        movieinstance_list: list_movieinstances
+      });
+    });
 };
 
 // Display details page for MovieInstrances

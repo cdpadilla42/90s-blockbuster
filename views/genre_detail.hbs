@@ -1,0 +1,11 @@
+<h1>{{genre.name}}</h1>
+<div>
+  <h4>Movies</h4>
+  {{#if genre_movies}}
+    {{#each genre_movies}}
+      <a href="{{movie.url}}">{{movie.title}}</a>
+    {{/each}}
+  {{else}}
+    <p>No movies to display</p>
+  {{/if}}
+</div>
