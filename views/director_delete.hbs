@@ -1,0 +1,27 @@
+<h1>{{title}}</h1>
+
+<p>  </p>
+
+{{#if director_movies}}
+<p>Delete the following books before attempting to delete</p>
+
+<h4>Movies</h4>
+<ul>
+  {{director_movies}}
+{{#each director_movies}}
+  <li>
+    <a href="{{this.url}}">{{this.title}}</a>
+  </li>
+{{/each}}
+</ul>
+{{else}}
+<p>Do you really want to delete this Author?</p>
+
+<form action="" method="POST">
+  <div class="form-group">
+    <input type="hidden" name="directorid" required="true" value="{{director._id}}">
+    <input type="submit" value="Delete">
+  </div>
+</form>
+
+{{/if}}

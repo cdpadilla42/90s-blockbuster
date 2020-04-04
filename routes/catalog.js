@@ -40,10 +40,10 @@ router.get('/director/create', director_controller.director_create_get);
 router.post('/director/create', director_controller.director_create_post);
 
 // GET request for deleting a director
-router.get('/director/delete', director_controller.director_delete_get);
+router.get('/director/:id/delete', director_controller.director_delete_get);
 
 // POST request for deleting a director
-router.post('/director/delete', director_controller.director_delete_post);
+router.post('/director/:id/delete', director_controller.director_delete_post);
 
 // GET request for updating a director
 router.get('/director/update', director_controller.director_update_get);

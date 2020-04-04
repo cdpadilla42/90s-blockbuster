@@ -2,6 +2,7 @@ var Director = require('../models/director');
 const Movie = require('../models/movie');
 const { body, validationResult } = require('express-validator/check');
 const { sanitizeBody } = require('express-validator/filter');
+const async = require('async');
 
 // Display List of all Directors
 exports.director_list = (req, res, err) => {
@@ -70,7 +71,7 @@ exports.director_create_post = [
     } else {
       // Data from form is valid
 
-      // Create an Author object with escaped and trimmed data
+      // Create an Director object with escaped and trimmed data
       var director = new Director({
         first_name: req.body.first_name,
         family_name: req.body.family_name,
@@ -89,7 +90,7 @@ exports.director_create_post = [
 exports.director_delete_get = (req, res, next) => {
   async.parallel(
     {
-      author: function (callback) {
+      director: function (callback) {
         Director.findById(req.params.id).exec(callback);
       },
       director_movies: function (callback) {
@@ -133,13 +134,12 @@ exports.director_delete_post = (req, res) => {
         return;
       } else {
         // Director has no books. Delete object and redirect to list of Directors
-        Director.findByIdAndRemove(
-          req.body.director.id,
-          function deleteDirector(err) {
-            if (err) return next(err);
-            res.redirect('/catalog/directors');
-          }
-        );
+        Director.findByIdAndRemove(req.body.directorid, function deleteDirector(
+          err
+        ) {
+          if (err) return next(err);
+          res.redirect('/catalog/directors');
+        });
       }
     }
   );
