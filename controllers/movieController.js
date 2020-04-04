@@ -95,14 +95,14 @@ exports.movie_create_post = [
   expressValidator
     .body('isbn', 'isbn must not be empty')
     .trim()
-    .isEmpty({ min: 1 }),
+    .isLength({ min: 1 }),
 
   // Sanitize fields with wildcar
   expressValidator.sanitizeBody('*').escape(),
 
   // Process request after validation and sanitization
   (req, res, next) => {
-    const errors = validationResult(req);
+    const errors = expressValidator.validationResult(req);
 
     // Create a movie object with escaped and trimmed data
     const movie = new Movie({
@@ -123,15 +123,15 @@ exports.movie_create_post = [
             Genre.find(callback);
           },
         },
-        function (err, result) {
+        function (err, results) {
           if (err) return next(err);
 
           // Mark selected genres as checked
-          for (let i = 0; i < results.genres.length; i++) {
-            if (movie.genre.indexOf(results.genres[i]._id) > -1) {
-              results.genres[i].checked = 'true';
-            }
-          }
+          // for (let i = 0; i < results.genres.length; i++) {
+          //   if (movie.genre.indexOf(results.genres[i]._id) > -1) {
+          //     results.genres[i].checked = 'true';
+          //   }
+          // }
 
           res.render('movie_form', {
             title: 'Create Movie',

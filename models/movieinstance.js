@@ -6,13 +6,13 @@ const Schema = mongoose.Schema;
 const MovieInstanceSchema = new Schema({
   movie: { type: Schema.Types.ObjectId, ref: 'Movie', required: true },
   status: {
-    type: Boolean,
+    type: String,
     required: true,
-    enum: ['Available', 'Maintenance', 'Loaned', 'Reserved'],
-    default: 'Maintenance'
+    enum: ['available', 'maintenance', 'loaned', 'reserved'],
+    default: 'maintenance',
   },
   dueDate: { type: Date, default: Date.now },
-  imprint: { type: String }
+  imprint: { type: String },
 });
 
 MovieInstanceSchema.virtual('url').get(

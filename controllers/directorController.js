@@ -1,4 +1,5 @@
 var Director = require('../models/director');
+const Movie = require('../models/movie');
 const { body, validationResult } = require('express-validator/check');
 const { sanitizeBody } = require('express-validator/filter');
 
@@ -85,15 +86,64 @@ exports.director_create_post = [
 ];
 
 // Display director delete form on GET
-exports.director_delete_get = (req, res) => {
-  res.send('NOTIMP: director delete GET');
+exports.director_delete_get = (req, res, next) => {
+  async.parallel(
+    {
+      author: function (callback) {
+        Director.findById(req.params.id).exec(callback);
+      },
+      director_movies: function (callback) {
+        Movie.find({ director: req.params.id }).exec(callback);
+      },
+    },
+    function (err, results) {
+      if (err) return next(err);
+      if (results.director == null) {
+        res.redirect('/catalog/directors');
+      }
+      res.render('director_delete', {
+        title: 'Delete Director',
+        director: results.director,
+        director_movies: results.director_movies,
+      });
+    }
+  );
 };
 
 // Handle director delete POST
 exports.director_delete_post = (req, res) => {
-  res.send('NOTIMP: director delete POST');
+  async.parallel(
+    {
+      director: function (callback) {
+        Director.findById(req.body.directorid).exec(callback);
+      },
+      directors_movies: function (callback) {
+        Movie.find({ director: req.body.directorid }).exec(callback);
+      },
+    },
+    function (err, results) {
+      if (err) return next(err);
+      if (results.directors_movies.length > 0) {
+        // Director has movies. Render in same way as a GET route
+        res.render('director_delete', {
+          title: 'Delete Director',
+          director: results.director,
+          director_movies: results.directors_movies,
+        });
+        return;
+      } else {
+        // Director has no books. Delete object and redirect to list of Directors
+        Director.findByIdAndRemove(
+          req.body.director.id,
+          function deleteDirector(err) {
+            if (err) return next(err);
+            res.redirect('/catalog/directors');
+          }
+        );
+      }
+    }
+  );
 };
-
 // Display director update on GET
 exports.director_update_get = (req, res) => {
   res.send('NOT IMP: director update on GET');

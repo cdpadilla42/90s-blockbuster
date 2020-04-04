@@ -17,6 +17,43 @@
     </label>
   </div>
   <div class="form-group">
-    
+    <label for="summary">
+      Summary:
+      <br>
+      <textarea name="summary" placeholder="Summary" rows="3" required="true" {{#if movie.summary}}movie.summary{{else}}{{/if}}></textarea>
+    </label>
   </div>
+  <div class="form-group">
+    <label for="genre">
+      Genre:
+      {{#each genres}}
+        <input type="checkbox" name="genre" value="{{this._id}}" {{#if this.checked}}checked{{/if}}>
+        <label for="{{this._id}}">{{this.name}}</label>
+      {{/each}}
+      </select>
+    </label>
+   <div class="form-group">
+    <label for="isbn">
+      ISBN:
+      <input type="text"  placeholder="Name of movie" name="isbn" required="true" value="{{#if movie.isbn}}movie.isbn{{else}}{{/if}}">
+    </label>
+  </div>
+  </div>
+  <div class="form-group">
+    <input type="submit" value="Submit">
+  </div>
+ 
 </form>
+
+{{#if errors}}
+  {{#each errors}}
+    {{#each this}}
+      {{this}}
+    {{/each}}
+  {{/each}}
+{{/if}}
+
+{{!-- For implementation later: iterate to keep checked movies checked
+iterate over movie.genre
+ if movie.genre = the current genre from all the genres
+then mark checked --}}
