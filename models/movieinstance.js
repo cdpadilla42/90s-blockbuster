@@ -15,9 +15,9 @@ const MovieInstanceSchema = new Schema({
   imprint: { type: String },
 });
 
-MovieInstanceSchema.virtual('url').get(
-  () => 'catalog/movieinstance' + this._id
-);
+MovieInstanceSchema.virtual('url').get(() => {
+  '/catalog/movieinstance/' + this._id;
+});
 
 MovieInstanceSchema.virtual('due_back_formatted').get(() => {
   moment(this.due_back).format('MMMM Do, YYYY');

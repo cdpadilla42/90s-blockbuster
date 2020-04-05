@@ -40,8 +40,33 @@ exports.movie_list = (req, res, next) => {
 };
 
 // Display detail of movie
-exports.movie_detail = (req, res) => {
-  res.send('NOT IMPLEMENTED: movie detail: ' + req.params.id);
+exports.movie_detail = (req, res, next) => {
+  async.parallel(
+    {
+      movie: function (callback) {
+        Movie.findById(req.params.id)
+          .populate('dirctor')
+          .populate('genre')
+          .exec(callback);
+      },
+      movie_instance: function (callback) {
+        MovieInstance.find({ movie: req.params.id }).exec(callback);
+      },
+    },
+    function (err, results) {
+      if (err) return next(err);
+      if (results.movie == null) {
+        var err = new Error('Movie not found');
+        err.status = 404;
+        return next(err);
+      }
+      res.render('movie_detail', {
+        title: results.movie.title,
+        movie: results.movie,
+        movie_instances: results.movie_instance,
+      });
+    }
+  );
 };
 
 // Display create movie GET
@@ -153,14 +178,126 @@ exports.movie_create_post = [
 ];
 
 // Display update movie GET
-exports.movie_update_get = (req, res) => {
-  res.send('NOT IMPLEMENTED: movie update GET');
+exports.movie_update_get = (req, res, next) => {
+  async.parallel(
+    {
+      movie: function (callback) {
+        Movie.findById(req.params.id)
+          .populate('director')
+          .populate('genre')
+          .exec(callback);
+      },
+      directors: function (callback) {
+        Director.find(callback);
+      },
+      genres: function (callback) {
+        Genre.find(callback);
+      },
+    },
+    function (err, results) {
+      if (err) return next(err);
+      if (results.movie == null) {
+        var err = new Error('Movie not found');
+        err.status = 404;
+        return next(err);
+      }
+      // Success
+      // Could mark selected genres as checked. Skipping for now
+      res.render('movie_form', {
+        title: 'Update Movie',
+        directors: results.directors,
+        genres: results.genres,
+        movie: results.movie,
+      });
+    }
+  );
 };
 
 // Handle update movie POST
-exports.movie_update_post = (req, res) => {
-  res.send('NOT IMPLEMENTED: movie update POST');
-};
+exports.movie_update_post = [
+  // convert genre to an array
+  (req, res, next) => {
+    if (!(req.body.genre instanceof Array)) {
+      if (typeof req.body.genre === 'undefined') {
+        req.body.genre = [];
+      } else {
+        req.body.genre = new Array(req.body.genre);
+      }
+      next();
+    }
+  },
+  // validate fields
+  expressValidator
+    .body('title', 'Title must not be empty')
+    .trim()
+    .isLength({ min: 1 }),
+  expressValidator
+    .body('director', 'Director must not be empty')
+    .trim()
+    .isLength({ min: 1 }),
+  expressValidator
+    .body('summary', 'Summary must not be empty')
+    .trim()
+    .isLength({ min: 1 }),
+  expressValidator
+    .body('isbn', 'isbn must not be empty')
+    .trim()
+    .isLength({ min: 1 }),
+  // sanitize
+  expressValidator.sanitizeBody('title').escape(),
+  expressValidator.sanitizeBody('director').escape(),
+  expressValidator.sanitizeBody('summary').escape(),
+  expressValidator.sanitizeBody('isbn').escape(),
+
+  // Proccess request after validation and sanitization
+  (req, res, next) => {
+    // return if errors
+    const errors = expressValidator.validationResult(req);
+    // update the current movie
+    var movie = new Movie({
+      title: req.body.title,
+      director: req.body.direct,
+      summary: req.body.summary,
+      isbn: req.body.isbn,
+      genre: typeof req.body.genre === 'undefined' ? [] : req.body.genre,
+      _id: req.params.id,
+    });
+    if (!errors.isEmpty()) {
+      // Errors! render form again
+      // Get all authors and genres for form
+      async.parallel(
+        {
+          directors: function (callback) {
+            Director.find(callback);
+          },
+          genres: function (callback) {
+            Genre.find(callback);
+          },
+        },
+        function (err, results) {
+          if (err) return next(err);
+          res.render('book_form', {
+            title: 'Update Book',
+            directors: results.directors,
+            genres: results.genres,
+            movie: movie,
+            errors: errors.array(),
+          });
+          return;
+        }
+      );
+    } else {
+      // Success! Update record
+      Movie.findByIdAndUpdate(req.params.id, movie, {}, function (
+        err,
+        themovie
+      ) {
+        if (err) return next(err);
+        res.redirect(themovie.url);
+      });
+    }
+  },
+];
 
 // Display delete movie GET
 exports.movie_delete_get = (req, res) => {

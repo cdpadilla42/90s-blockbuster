@@ -4,8 +4,7 @@ var expressValidator = require('express-validator');
 
 // Display list of all MovieInstrances
 exports.movieInstance_list = (req, res, next) => {
-  movieInstance
-    .find()
+  MovieInstance.find()
     .populate('movie')
     .exec((err, list_movieinstances) => {
       if (err) return next(err);
@@ -17,8 +16,21 @@ exports.movieInstance_list = (req, res, next) => {
 };
 
 // Display details page for MovieInstrances
-exports.movieInstance_detail = (req, res) => {
-  res.send('NOT IMPLEMENTED: Movie Instanc Detail: ' + req.params.id);
+exports.movieInstance_detail = (req, res, next) => {
+  MovieInstance.findById(req.params.id)
+    .populate('movie')
+    .exec(function (err, movieinstance) {
+      if (err) return next(err);
+      if (movieinstance == null) {
+        var err = new Error('Movie copy not found');
+        err.status = 404;
+        return next(err);
+      }
+      res.render('movieinstance_detail', {
+        title: 'Copy: ' + movieinstance.movie.title,
+        movieinstance,
+      });
+    });
 };
 
 // Display create MovieInstrances w/ GET
@@ -83,21 +95,38 @@ exports.movieInstance_create_post = [
       movieInstance.save(function (err) {
         if (err) return next(err);
         res.redirect(movieInstance.url);
-
-        // res.send('done!');
       });
     }
   },
 ];
 
 // Display delete MovieInstrances w/ GET
-exports.movieInstance_delete_get = (req, res) => {
-  res.send('NOT IMPLEMENTED: Movie Instance delete GET');
+exports.movieInstance_delete_get = (req, res, next) => {
+  // only needs to render the delete movie instance page. Needs data on the movie being deleted
+  // find the movie instance
+  MovieInstance.findById(req.params.id, (err, movieinstance) => {
+    // if error, return error
+    if (err) return next(err);
+    if (movieinstance == null) {
+      res.redirect('/catalog/movieinstance');
+    }
+    // if success, render page
+    res.render('movieinstance_delete', {
+      title: 'Delete Movie instance',
+      movieinstance,
+    });
+  });
 };
 
 // Handle delete MovieInstrances w/ POST
-exports.movieInstance_delete_post = (req, res) => {
-  res.send('NOT IMPLEMENTED: Movie Instance delete Post');
+exports.movieInstance_delete_post = (req, res, next) => {
+  MovieInstance.findByIdAndRemove(
+    req.params.movieinstanceid,
+    function deleteMovieInstance(err) {
+      if (err) return next(err);
+      res.redirect('/catalog/movieinstance');
+    }
+  );
 };
 
 // Display update MovieInstrances w/ GET

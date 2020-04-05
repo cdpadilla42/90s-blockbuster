@@ -31,6 +31,12 @@ router.get('/movies', movie_controller.movie_list);
 // GET request for details on one movie
 router.get('/movie/:id', movie_controller.movie_detail);
 
+// GET request for updating a movie
+router.get('/movie/:id/update', movie_controller.movie_update_get);
+
+// POST request for updating a movie
+router.post('/movie/:id/update', movie_controller.movie_update_post);
+
 /// DIRECTOR ROUTES ///
 
 // GET request for creating a director
@@ -46,10 +52,10 @@ router.get('/director/:id/delete', director_controller.director_delete_get);
 router.post('/director/:id/delete', director_controller.director_delete_post);
 
 // GET request for updating a director
-router.get('/director/update', director_controller.director_update_get);
+router.get('/director/:id/update', director_controller.director_update_get);
 
 // POST request for updating a director
-router.post('/director/update', director_controller.director_update_post);
+router.post('/director/:id/update', director_controller.director_update_post);
 
 // GET request for showing a list of directors
 router.get('/directors', director_controller.director_list);
@@ -106,7 +112,7 @@ router.get(
 );
 
 // POST request for deleting a movie instance
-router.get(
+router.post(
   '/movieinstance/:id/delete',
   movie_instance_controller.movieInstance_delete_post
 );
@@ -124,7 +130,7 @@ router.post(
 );
 
 // GET request to show list of movieInstances
-router.get('/movieinstances', movie_instance_controller.movieInstance_list);
+router.get('/movieinstance', movie_instance_controller.movieInstance_list);
 
 router.get(
   '/movieinstance/:id',

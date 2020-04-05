@@ -98,15 +98,13 @@ exports.genre_update_get = (req, res) => {
   res.send('NOT IMPLEMENTED: Genre update GET');
 };
 
-// Handle create Genres POST
+// Handle update Genres POST
 exports.genre_update_post = (req, res) => {
   res.send('NOT IMPLEMENTED: Genre create POST');
 };
 
 // Display delete Genres GET
-exports.genre_delete_get = (req, res) => {
-  res.send('NOT IMPLEMENTED: Genre delete GET');
-};
+exports.genre_delete_get = (req, res) => {};
 
 // Handle delete Genres GET
 exports.genre_delete_post = (req, res) => {

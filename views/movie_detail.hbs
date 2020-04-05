@@ -1,0 +1,30 @@
+<h1>{{title}}</h1>
+
+<div>
+  <p>
+    <strong>Director:</strong>
+    <a href="{{movie.director.url}}">{{movie.director.name}}</a>
+  </p>
+  <p>
+    <strong>Summary:</strong>
+    {{movie.summary}}
+  </p>
+  <p>
+    <strong>ISBN:</strong>
+    {{movie.isbn}}
+  </p>
+  <p>
+    <strong>Genre</strong>
+    {{#each movie.genre}}
+      <a href="{{this.url}}">{{this.name}}</a>
+    {{/each}}
+  </p>
+</div>
+<div>
+  <h4>Copies</h4>
+  <ul>
+  {{#each movie_instances}}
+    <li>{{this.status}}</li>
+  {{/each}}
+  </ul>
+</div>

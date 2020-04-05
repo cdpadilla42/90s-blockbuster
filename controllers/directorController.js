@@ -20,7 +20,29 @@ exports.director_list = (req, res, err) => {
 
 // Display detail page for a specific director
 exports.director_detail = (req, res) => {
-  res.send('NOT IMPLEMENTED: director detail: ' + req.params.id);
+  async.parallel(
+    {
+      director: function (callback) {
+        Director.findById(req.params.id).exec(callback);
+      },
+      director_movies: function (callback) {
+        Movie.find({ director: req.params.id }, 'title summary').exec(callback);
+      },
+    },
+    function (err, results) {
+      if (err) return next(err);
+      if (results.director == null) {
+        var err = new Error('Director not found');
+        err.status = 404;
+        return next(err);
+      }
+      res.render('director_detail', {
+        title: 'Director Details',
+        director: results.director,
+        director_movies: results.directors_movies,
+      });
+    }
+  );
 };
 
 // Display director create form on GET
