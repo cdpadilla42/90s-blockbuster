@@ -23,6 +23,10 @@ MovieInstanceSchema.virtual('due_back_formatted').get(() => {
   moment(this.due_back).format('MMMM Do, YYYY');
 });
 
+MovieInstanceSchema.virtual('due_back_view_format').get(() => {
+  moment(this.due_back).format('MM/Do/YYYY');
+});
+
 // Export
 
 module.exports = mongoose.model('MovieInstance', MovieInstanceSchema);

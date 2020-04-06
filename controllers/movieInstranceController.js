@@ -130,7 +130,30 @@ exports.movieInstance_delete_post = (req, res, next) => {
 
 // Display update MovieInstrances w/ GET
 exports.movieInstance_update_get = (req, res) => {
-  res.send('NOT IMPLEMENTED: Movie Instance update GET');
+  // find the instance & movie list
+  async.parallel(
+    {
+      movies: function (callback) {
+        Movies.find({}).exec(callback);
+      },
+      movieInstance: function (callback) {
+        findById(req.params.id).exec(callback);
+      },
+    },
+    function (err, results) {
+      if (err) return next(err);
+      if (results.movieInstance == null) {
+        const error = new Error('Instance not found');
+        error.status = 404;
+        return next(error);
+      }
+      res.render('movie_instance_form', {
+        title: 'Update Movie Instance',
+        movies: results.movies,
+        movieInstance: results.movieInstance,
+      });
+    }
+  );
 };
 
 // Display update MovieInstrances w/ POST
