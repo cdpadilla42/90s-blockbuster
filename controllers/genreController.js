@@ -117,7 +117,7 @@ exports.genre_delete_get = (req, res, next) => {
     function (err, results) {
       // check for err
       if (err) return next(err);
-      // Redirect if not found
+      //git  Redirect if not found
       if (results.genre == null) {
         res.redirect('/catalog/genres');
       }

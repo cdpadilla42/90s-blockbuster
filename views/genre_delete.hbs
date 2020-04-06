@@ -1,0 +1,22 @@
+<h1>{{title}}</h1>
+
+{{#if movies}}
+
+  <p>Genre still has movies. Please delete movies before deleting genre.</p>
+
+  <ul>
+    {{#each movies}}
+      <li>{{this.title}}</li>
+    {{/each}}
+  </ul>
+
+{{else}}
+
+<p>Are you sure you want to delete {{genre.name}}?</p>
+
+<form action="" method="post">
+  <input type="hidden" name="genreid" value="{{genre._id}}">
+  <input type="submit" value="Delete">
+</form>
+
+{{/if}}
