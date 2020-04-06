@@ -329,5 +329,33 @@ exports.movie_delete_get = (req, res) => {
 
 // Handle delete movie POST
 exports.movie_delete_post = (req, res) => {
-  res.send('NOT IMPLEMENTED: movie delete POST');
+  // Get movie and movieInstance
+  async.parallel(
+    {
+      movie: function (callback) {
+        Movie.findById(req.body.movieid).exec(callback);
+      },
+      movieInstances: function (callback) {
+        MovieInstance.find({ movie: req.body.movieid }).exec(callback);
+      },
+    },
+    (err, results) => {
+      if (err) return next(err);
+      // if movieInstances render the get request
+      if (results.movieInstances.length > 0) {
+        res.render('movie_delete', {
+          title: 'Delete Movie',
+          movie: results.movie,
+          movieInstances: results.movieInstances,
+        });
+        return;
+      } else {
+        // else remove movie
+        Movie.findByIdAndRemove(req.body.movieid, function deleteMovie(err) {
+          if (err) return next(err);
+          res.redirect('/catalog/movies');
+        });
+      }
+    }
+  );
 };
