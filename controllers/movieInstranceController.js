@@ -160,6 +160,59 @@ exports.movieInstance_update_get = (req, res) => {
 };
 
 // Display update MovieInstrances w/ POST
-exports.movieInstance_update_post = (req, res) => {
-  res.send('NOT IMPLEMENTED: Movie Instance update POST');
-};
+exports.movieInstance_update_post = [
+  // validate data
+  expressValidator
+    .body('status', 'status must not be empty')
+    .trim()
+    .isLength({ min: 1 }),
+  expressValidator.body('dueDate'), // TODO validate date
+  expressValidator.body('imprint').trim().isLength({ min: 1 }),
+
+  // sanitize data
+  expressValidator.sanitizeBody('movie').escape(),
+  expressValidator.sanitizeBody('status').escape(),
+  expressValidator.sanitizeBody('dueDate').escape(),
+  expressValidator.sanitizeBody('imprint').escape(),
+
+  // Process request
+  (req, res, next) => {
+    // Store errors
+    const errors = expressValidator.validationResult(req);
+
+    // Create instance from validated & sanitized data
+    const movieInstance = new MovieInstance({
+      movie: req.body.movie,
+      status: req.body.status,
+      dueDate: req.body.dueDate,
+      imprint: req.body.imprint,
+      _id: req.params.id,
+    });
+    // if errors
+    if (!errors.isEmpty()) {
+      // get movie list
+      Movie.find({}).exec(function (err, results) {
+        // check for err
+        if (err) return next(err);
+        // render form with current movieInstance
+        res.render('movie_instance_form', {
+          title: 'Update Movie Instance',
+          movie_list: results,
+          movieInstance,
+        });
+        return;
+      });
+    }
+    // if no errors
+    // save update instance
+    MovieInstance.findByIdAndUpdate(
+      req.params.id,
+      movieInstance,
+      {},
+      (err, theinstance) => {
+        if (err) return next(err);
+        res.redirect(theinstance.url);
+      }
+    );
+  },
+];
