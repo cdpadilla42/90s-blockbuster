@@ -121,7 +121,7 @@ exports.movieInstance_delete_get = (req, res, next) => {
 // Handle delete MovieInstrances w/ POST
 exports.movieInstance_delete_post = (req, res, next) => {
   MovieInstance.findByIdAndRemove(
-    req.params.movieinstanceid,
+    req.body.movieinstanceid,
     function deleteMovieInstance(err) {
       if (err) return next(err);
       res.redirect('/catalog/movieinstance');
