@@ -1,6 +1,7 @@
 var MovieInstance = require('../models/movieinstance');
 var Movie = require('../models/movie');
 var expressValidator = require('express-validator');
+var async = require('async');
 
 // Display list of all MovieInstrances
 exports.movieInstance_list = (req, res, next) => {
@@ -63,6 +64,8 @@ exports.movieInstance_create_post = [
 
   // Process request
   (req, res, next) => {
+    // find movie id by name?
+
     // Store Errors
     const errors = expressValidator.validationResult(req);
     // Create new MovieInstance
@@ -70,7 +73,7 @@ exports.movieInstance_create_post = [
       movie: req.body.movie,
       status: req.body.status,
       dueDate: req.body.dueDate,
-      imprtint: req.body.imprint,
+      imprint: req.body.imprint,
     });
     // if errors
     if (!errors.isEmpty()) {
@@ -134,10 +137,10 @@ exports.movieInstance_update_get = (req, res) => {
   async.parallel(
     {
       movies: function (callback) {
-        Movies.find({}).exec(callback);
+        Movie.find({}).exec(callback);
       },
       movieInstance: function (callback) {
-        findById(req.params.id).exec(callback);
+        MovieInstance.findById(req.params.id).exec(callback);
       },
     },
     function (err, results) {
@@ -149,7 +152,7 @@ exports.movieInstance_update_get = (req, res) => {
       }
       res.render('movie_instance_form', {
         title: 'Update Movie Instance',
-        movies: results.movies,
+        movie_list: results.movies,
         movieInstance: results.movieInstance,
       });
     }

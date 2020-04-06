@@ -13,7 +13,7 @@
   <div class="form-group">
     <label for="imprint">
       Imprint:
-      <input type="text" name="imprint">
+      <input type="text" name="imprint" {{#if movieInstance}}value="{{movieInstance.imprint}}"{{/if}}>
     </label>
   </div>
   <div class="form-group">
