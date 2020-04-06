@@ -27,7 +27,6 @@ exports.movieInstance_detail = (req, res, next) => {
         return next(err);
       }
       res.render('movieinstance_detail', {
-        title: 'Copy: ' + movieinstance.movie.title,
         movieinstance,
       });
     });

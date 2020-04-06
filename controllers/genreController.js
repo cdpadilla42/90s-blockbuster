@@ -104,7 +104,32 @@ exports.genre_update_post = (req, res) => {
 };
 
 // Display delete Genres GET
-exports.genre_delete_get = (req, res) => {};
+exports.genre_delete_get = (req, res, next) => {
+  async.parallel(
+    {
+      genre: function (callback) {
+        Genre.findById(req.params.id).exec(callback);
+      },
+      movies: function (callback) {
+        Movie.find({ genre: req.params.id }).exec(callback);
+      },
+    },
+    function (err, results) {
+      // check for err
+      if (err) return next(err);
+      // Redirect if not found
+      if (results.genre == null) {
+        res.redirect('/catalog/genres');
+      }
+      // render appropriate template
+      res.render('genre_delete', {
+        title: 'Delete Genre',
+        genre: results.genre,
+        movies: results.movies,
+      });
+    }
+  );
+};
 
 // Handle delete Genres GET
 exports.genre_delete_post = (req, res) => {
