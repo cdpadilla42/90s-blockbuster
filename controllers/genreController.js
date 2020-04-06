@@ -94,8 +94,15 @@ exports.genre_create_post = [
 ];
 
 // Display Update Genres GET
-exports.genre_update_get = (req, res) => {
-  res.send('NOT IMPLEMENTED: Genre update GET');
+exports.genre_update_get = (req, res, next) => {
+  // get genre id
+  Genre.findById(req.params.id).exec((err, genre) => {
+    // render page
+    res.render('genre_update', {
+      title: 'Update Genre',
+      genre,
+    });
+  });
 };
 
 // Handle update Genres POST
