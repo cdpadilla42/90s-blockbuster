@@ -301,7 +301,30 @@ exports.movie_update_post = [
 
 // Display delete movie GET
 exports.movie_delete_get = (req, res) => {
-  res.send('NOT IMPLEMENTED: movie delete GET');
+  // asynchronously get movie instance and movies
+  async.parallel(
+    {
+      movie: function (callback) {
+        Movie.findById(req.params.id).exec(callback);
+      },
+      movieInstances: function (callback) {
+        MovieInstance.find({ movie: req.params.id }).exec(callback);
+      },
+    },
+    function (err, results) {
+      // if no movie, return to list
+      if (err) return next(err);
+      if (results.movie == null) {
+        res.redirect('/catalog/movies');
+      }
+      res.render('movie_delete', {
+        title: 'Delete Movie',
+        movie: results.movie,
+        movieInstances: results.movieInstances,
+      });
+    }
+  );
+  // render the page w/ results
 };
 
 // Handle delete movie POST

@@ -132,6 +132,36 @@ exports.genre_delete_get = (req, res, next) => {
 };
 
 // Handle delete Genres GET
-exports.genre_delete_post = (req, res) => {
-  res.send('NOT IMPLEMENTED: Genre delete POST');
+exports.genre_delete_post = (req, res, next) => {
+  // get genre and movies
+  async.parallel(
+    {
+      genre: function (callback) {
+        Genre.findById(req.body.genreid).exec(callback);
+      },
+      movies: function (callback) {
+        Movie.find({ genre: req.body.genreid }).exec(callback);
+      },
+    },
+    function (err, results) {
+      if (err) return next(err);
+      if (results.movies.length > 0) {
+        res.render('genre_delete', {
+          title: 'Delete Genre',
+          movies: results.movies,
+          genre: results.genre,
+        });
+      } else {
+        Genre.findByIdAndRemove(req.body.genreid, function deleteGenre() {
+          if (err) return next(err);
+          res.redirect('/catalog/genres');
+        });
+      }
+    }
+  );
+  // if movies
+  // redirect to screen. Movies must be deleted
+  // if no movies
+  // process genre delete.
+  // redirect to genre list
 };
