@@ -1,0 +1,22 @@
+<h1>{{title}}</h1>
+
+{{#if movieInstance}}
+
+  <p>Movie instances must be deleted before deleting {{movie.title}}</p>
+  <ul>
+  {{#each movieInstance}}
+    <li>{{this}}</li>
+  {{/each}}
+  </ul>
+{{else}}
+
+  <p>Are you sure you want to delete {{movie.title}}?</p>
+
+  <form action="" method="post">
+    <input type="hidden" name="movieid" value="{{movie._id}}">
+    <input type="submit" value="Delete">
+  </form>
+
+{{/if}}
+
+
