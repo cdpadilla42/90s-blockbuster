@@ -167,11 +167,69 @@ exports.director_delete_post = (req, res) => {
   );
 };
 // Display director update on GET
-exports.director_update_get = (req, res) => {
-  res.send('NOT IMP: director update on GET');
+exports.director_update_get = (req, res, next) => {
+  // import the director
+  Director.findById(req.params.id).exec((err, director) => {
+    // check for errors
+    if (err) return next(err);
+    if (director == null) {
+      const error = new Error('Director not found');
+      error.status = 404;
+      return next(error);
+    }
+    // render form with info
+    res.render('director_form', {
+      title: 'Update Director',
+      director,
+    });
+  });
 };
 
 // Handle director update on POST
-exports.director_update_post = (req, res) => {
-  res.send('NOT IMP: director update on POST');
-};
+exports.director_update_post = [
+  // validate and sanitize data
+  body('first_name', 'First Name required').trim().isLength({ min: 1 }),
+  body('family_name', 'Family Name required').trim().isLength({ min: 1 }),
+  body('date_of_birth', 'Invalid DOB')
+    .optional({ checkFalsy: true })
+    .isISO8601(),
+  body('date_of_death', 'Invalid Date of Death')
+    .optional({ checkFalsy: true })
+    .isISO8601(),
+
+  sanitizeBody('first_name').escape(),
+  sanitizeBody('family_name').escape(),
+  sanitizeBody('date_of_birth').escape(),
+  sanitizeBody('date_of_death').escape(),
+
+  (req, res, next) => {
+    const director = new Director({
+      first_name: req.body.first_name,
+      family_name: req.body.family_name,
+      date_of_death: req.body.date_of_death,
+      date_of_birth: req.body.date_of_birth,
+      _id: req.params.id,
+    });
+
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      res.render('director_form', {
+        title: 'Update Director',
+        director,
+        errors: errors.array(),
+      });
+      return;
+    } else {
+      // Find director in DB
+      Director.findByIdAndUpdate(
+        req.params.id,
+        director,
+        {},
+        (err, thedirector) => {
+          if (err) return next(err);
+          res.redirect(thedirector.url);
+        }
+      );
+    }
+  },
+];
