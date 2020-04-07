@@ -19,7 +19,7 @@ exports.director_list = (req, res, err) => {
 };
 
 // Display detail page for a specific director
-exports.director_detail = (req, res) => {
+exports.director_detail = (req, res, next) => {
   async.parallel(
     {
       director: function (callback) {

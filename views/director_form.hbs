@@ -14,11 +14,11 @@
   <div class="form-group">
     <label for="date_of_birth">
       Date of Birth:
-      <input type="date" name="date_of_birth" value="{{#if director.date_of_birth}}{{director.date_of_birth}}{{else}}{{/if}}" placeholder="dd/mm/yyyy">
+      <input type="date" name="date_of_birth" value="{{#if director.date_of_birth}}{{director.dob_formatted}}{{else}}{{/if}}" placeholder="dd/mm/yyyy">
     </label>
     <label for="date_of_death">
       Date of Death:
-      <input type="date" name="date_of_death" value="{{#if director.date_of_death}}{{director.date_of_death}}{{else}}{{/if}}" placeholder="dd/mm/yyyy">
+      <input type="date" name="date_of_death" value="{{#if director.date_of_death}}{{director.dod_formatted}}{{else}}{{/if}}" placeholder="dd/mm/yyyy">
     </label>
   </div>
   <div class="form-group">
